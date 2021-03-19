@@ -49,7 +49,10 @@ app.get('/', (req, res, next) =>{
         Version: process.env.VERSION,
         Author: process.env.AUTHOR,
         Site: process.env.SITE,
-        Email: process.env.EMAIL
+        Email: process.env.EMAIL,
+        Facebook: process.env.FACEBOOK,
+        Linkedin: process.env.LINKEDIN,
+        Github: process.env.GITHUB,
     });
 });
 
