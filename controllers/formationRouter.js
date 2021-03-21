@@ -1,0 +1,115 @@
+/**
+ * Athor: Thiago Vilarinho Lemes
+ * contact: lemes_vilarinho@yahoo.com.br / contatothiagolemes@gmail.com
+ * site: thiagolemes.rf.gd
+ * Data: 21/03/2020
+ * version: 1.0
+ */
+
+'use strict';
+
+/** ================================================================= */
+
+/**
+ * Module dependencies.
+ */
+const { Formation } = require('../models');
+var express = require('express');
+var router = express.Router();
+
+/** ================================================================= */
+
+/**
+ * Routes.
+ */
+
+/* GET List Users */
+router.get('/', async (req, res) => {
+    let listFormation = await Formation.findAll({
+        attributes: ['id', 'name', 'description', 'tag', 'id_type_formation'],
+    });
+
+    if (listFormation) {
+        res.status(200).json(listFormation)
+    } else {
+        res.status(400).json({ success: false, message: 'Ocorreu um erro na requisição!' })
+    }
+});
+
+/* GET By Id User */
+router.get('/:id', async (req, res) => {
+    let formation = await Formation.findOne({
+        attributes: ['id', 'name', 'description', 'tag','id_type_formation'],
+        where: {
+            id: req.params.id
+        }, 
+    });
+
+    if (formation) {
+        res.status(200).json(formation)
+    } else {
+        res.status(400).json({ success: false, message: 'Ocorreu um erro na requisição!' })
+    }
+});
+
+/* Post User */
+router.post('/', async (req, res) => {
+    let formation = await Formation.create({
+        name: req.body.name,
+        description: req.body.description,
+        duration: req.body.duration,
+        image: req.body.image,
+        tag: req.body.tag,
+        id_type_formation: req.body.id_type_formation
+    });
+
+    if (formation) {
+        res.status(200).json(formation)
+    } else {
+        res.status(400).json({ success: false, message: 'Ocorreu um erro na requisição!' })
+    }
+});
+
+/* PUT By Id User */
+router.put('/:id', async (req, res) => {
+    let formation = await Formation.update(
+        {
+            name: req.body.name,
+            description: req.body.description,
+            duration: req.body.duration,
+            image: req.body.image,
+            tag: req.body.tag,
+            id_type_formation: req.body.id_type_formation
+        },
+        { returning: true, where: { id: req.params.id } }
+    );
+
+    if (formation) {
+        res.status(200).json(formation)
+    } else {
+        res.status(400).json({ success: false, message: 'Ocorreu um erro na requisição!' })
+    }
+});
+
+/* DELETE By Id User */
+router.delete('/:id', async (req, res) => {
+    
+    let id = req.params.id
+    await Formation.destroy({
+        where: {
+            id: id
+        }
+    })
+    .then(function (rowDeleted) { 
+        if (rowDeleted === 1) {
+            res.status(200).json({success: true, message: 'Tipo de formação deletado com sucesso!'})
+        }
+    },
+        function (err) {
+            res.status(400).json({ success: false, message: 'Ocorreu um erro na requisição! ' + err})
+    });
+});
+
+module.exports = router;
+
+/** ================================================================= */

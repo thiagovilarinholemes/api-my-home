@@ -16,44 +16,56 @@
  * Module dependencies.
  */
 const express = require('express');
+const app = express();
 require('dotenv/config');
+const api = process.env.API_URL;
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const morgan = require('morgan');
+const authJwt = require('./helpers/jwt');
+const errorHandler = require('./helpers/error-handler')
+
+/** ================================================================= */
+
+
+/**
+ * Middlewares
+ */
+app.use(cors());
+app.options('*', cors()); 
+app.use(morgan( `:method -- :status  -- :url`));
+app.use(bodyParser.json());
+app.use('/public', express.static(__dirname + '/public')); 
+app.use(authJwt());
+app.use(errorHandler);
 
 /** ================================================================= */
 
 /**
  * Constants
  */
-const app = express();
-const router = express.Router();
 const port = process.env.PORT || process.env.PORT_LISTEM;
-/** ================================================================= */
-
-/**
- * Middlewares
- */
-app.use(cors());
-app.options('*', cors()) 
-app.use(bodyParser.json());
+const indexRouter = require('./controllers/indexRouter');
+const userRouter = require('./controllers/userRouter');
+const typeFormRouter = require('./controllers/typeformationRouter');
+const formationRouter = require('./controllers/formationRouter');
+const userformationRouter = require('./controllers/userformationRouter');
 
 /** ================================================================= */
 
 /**
  * Routes
  */
-app.get('/', (req, res, next) =>{
-    res.status(200).json({
-        Name: process.env.NAME,
-        Description: process.env.DESCRIPTION,
-        Version: process.env.VERSION,
-        Author: process.env.AUTHOR,
-        Site: process.env.SITE,
-        Email: process.env.EMAIL,
-        Facebook: process.env.FACEBOOK,
-        Linkedin: process.env.LINKEDIN,
-        Github: process.env.GITHUB,
-    });
+app.use(`${api}/users`, userRouter);
+app.use(`${api}/typForm`, typeFormRouter);
+app.use(`${api}/formation`, formationRouter);
+app.use(`${api}/userformation`, userformationRouter);
+app.use(`${api}`, indexRouter);
+
+app.use(function(req, res, next) {
+    res.send({
+        message: "Está rota não existe!!!"
+    })
 });
 
 /** ================================================================= */

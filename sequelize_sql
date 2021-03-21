@@ -1,0 +1,24 @@
+# Deve obedecer está ordem:
+
+# Criação do Model e Migration Type Formation
+npx sequelize-cli model:generate --name TypeFormation --attributes name:string,description:string,tag:string
+
+# Criação do Model e Migration Formation 
+npx sequelize-cli model:generate --name Formation --attributes name:string,description:string,duration:string,image:string,tag:string
+
+# Criação do Model e Migration User
+npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string,password:string,phone:string,image:string,isAdmin:boolean
+
+# Criação do Model e Migration User Formation
+npx sequelize-cli model:generate --name UserFormation --attributes userId:INTEGER,FormationId:INTEGER
+
+
+# Criação das tabelas no Banco de Dados
+npx sequelize db:migrate
+
+# Criando Seede Type Formation
+npx sequelize-cli seed:generate --name Seed
+
+# Rodando a seed 
+npx sequelize-cli db:seed:all
+
